@@ -1,0 +1,302 @@
+# ----------------------------------------------------------------------
+# /etc/ssh/sshd_config
+#
+# Globale OpenSSH Daemon (sshd) Konfiguration.
+#
+# Dies ist eine Beispielkonfiguration für erhöhte Sicherheit bei Authen-
+# tifizierung und für die gesamten Sitzungen. Alle Kommentare sind auf
+# Deutsch verfasst worden damit andere Personen einfach von dieser Bei-
+# spielkonfiguration lernen können. Beachte bitte auch die Referenzen im
+# DocBlock, dort sind diverse Bücher und natürlich die man page drinnen.
+# Die Referenzen enthalten weitere Informationen zum Thema OpenSSH und
+# der Konfiguration des Daemons. Die man page ist natürlich immer ein
+# perfekter Startpunkt für Fragen, manche Optionen werden jedoch nicht
+# ausführlich erklärt, hier helfen die Bücher. Alle Angaben bei @default
+# beziehen sich auf die Debian Standards, sind diese nicht vorhanden
+# werden die sshd Standards verwendet.
+#
+# > Warum werden Optionen mit den Standardwerten angegeben?
+# Der Grund dafür ist einfach. Sollten sich Standardwerte in der Zukunft
+# ändern ist durch die explizite Angabe sichergestellt, dass die gesamte
+# Konfiguration so ist wie vom Administrator erwünscht. Es ist zwar sehr
+# unwahrscheinlich, dass sich Änderungen in der Standardkonfiguration
+# so ändern, dass sie von Nachteil für die Sicherheit sind. Trotzdem ist
+# Vorsicht besser als Nachsicht.
+#
+#     _           _         _       
+#    | |         | |       | |      
+#    | |__   ___ | |__   __| | ___  
+#    | '_ \ / _ \| '_ \ / _` |/ _ \ 
+#    | |_) | (_) | |_) | (_| | (_) |
+#    |_.__/ \___/|_.__/ \__,_|\___/ 
+#
+# @author Richard Fussenegger <richard@fussenegger.info>
+# @link http://richard.fussenegger.info/
+# @link http://bobdo.net/
+# @see man sshd
+# @see Pro OpenSSH von Michael Stahnke [ISBN 1590594762]
+# @see SSH, The Secure Shell von Daniel Barrett und Richard Silverman [ISBN 0596000111]
+# @copyright No Copyright
+# @license No License
+# @source https://github.com/Fleshgrinder/ssh
+# ----------------------------------------------------------------------
+
+# Bestimmt welche Umgebungsvariablen die der Nutzer übermittelt über-
+# nommen werden.
+#
+# @default LANG LC_*
+AcceptEnv
+
+# Wir verwenden ausschließlich IPv4-Adressen zur Verbindung via SSH.
+#
+# @default any
+AddressFamily                   inet
+
+# Agent forwarding erlaubt es eine Serie von SSH Verbindungen aufzubauen
+# (von einer Machine zur Nächsten zur Nächsten …). Das Deaktivieren er-
+# höht die Sicherheit jedoch nur minimal. Da Forwarder einfache Unix
+# Sockets sind kann jeder Benutzer selbst einen Forwareder erstellen.
+#
+# @default yes
+AllowAgentForwarding            no
+
+# Spezifiziert ob getunnelte Verbindungen von TCP über SSH akzeptiert
+# werden. Diese Option deaktiviert die Weiterleitung von Verbindungen
+# global für sshd.
+#
+# @default yes
+AllowTcpForwarding              no
+
+# Nur die Benutzer deren Namen hier angeführt sind, können sich am
+# System authentifizieren.
+#
+# @default "not set"
+AllowUsers                      richard
+
+# Absoluter oder relativer (zum Heimverzeichnis des Benutzerd der sich
+# am System authentifizieren will) Pfad zum öffentlichen Schlüssel bei
+# Schlüsselauthentifizierung.
+#
+# @default .ssh/authorized_keys
+AuthorizedKeysFile              .ssh/id_dsa.pub
+
+# Nur sinnvoll bei Verwendung von Passwort oder PAM basierter Authen-
+# tifizierung.
+#
+# @default yes
+ChallengeResponseAuthentication no
+
+# Gibt an welche Algorithmen für SSHv2 zur Verfügung stehen. Wir be-
+# schränken die Auswahl auf die stärksten Verfahren.
+#
+# @default aes128-ctr,aes192-ctr,aes256-ctr,arcfour256,arcfour128,
+#          aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,
+#          aes256-cbc,arcfour
+Ciphers                         aes256-ctr,arcfour256,3des-cbc,blowfish-cbc,aes256-cbc
+
+# Sepzifiziert die Anzahl an maximalen alive counts bevor die Verbindung
+# vom Benutzer gekappt wird. Die Berechnung ist wie folgt:
+#     ClientAliveInterval * ClientAliveCountMax = DisconnestTimeout
+#
+# @see ClientAliveInterval
+# @default 3
+ClientAliveCountMax             5
+
+# Spezifiziert den Interval in Sekunden wann immer eine Nachricht an den
+# Benutzer gesendet werden soll wenn keine Eingabe erfolgt.
+#
+# @default 0
+ClientAliveInterval             60
+
+# Spezifiziert Daten komprimiert werden. Delayed bedeutet, dass eine
+# Komprimierung erst nach erfolgreicher Authentifizierung erfolgen darf.
+#
+# @default delayed
+Compression                     delayed
+
+# Spezifiziert ob der distributions-spezifische extrige Versionssuffix
+# beim ersten Handshake mit inkludiert werden sollen.
+#
+# @default yes
+DebianBanner                    no
+
+# Spezifiziert ob sich Benutzer über weitergeleitete Ports anmelden
+# können.
+#
+# @default no
+GatewayPorts                    no
+
+# Spezifiziert ob eine GSSAPI Authentifizierung möglich ist.
+#
+# @default no
+GSSAPIAuthentication            no
+
+# Spezifiziert ob eine host-basierte Authentifizierung möglich ist.
+#
+# @default no
+HostbasedAuthentication         no
+
+# Absolute Pfade zu den Schlüsseldateien mit denen sich der Server beim
+# Benutzer meldet.
+#
+# @default /etc/ssh/ssh_host_rsa_key
+# @default /etc/ssh/ssh_host_dsa_key
+HostKey                         /etc/ssh/ssh_host_rsa_key
+HostKey                         /etc/ssh/ssh_host_dsa_key
+
+# Spezifiziert die Adresse und den Port über den sshd Verbindungen ent-
+# gegen nimmt.
+#
+# @default "all"
+ListenAddress                   127.0.0.1:12345
+
+# Spezifiziert die Zeitspanne nach der sshd die Verbindung zum Benutzer
+# kappt falls dieser sich nicht authentifiziert.
+#
+# @default 120
+LoginGraceTime                  120
+
+# Spezifiziert die Genauigkeit mit der geloggt wird.
+#
+# @default INFO
+LogLevel                        INFO
+
+# Spezifiziert die Algorithmen die für MAC (message authentication code)
+# verschlüsselung zur Verfügung stehen.
+#
+# @default hmac-md5,hmac-sha1,umac-64@openssh.com,
+#          hmac-ripemd160,hmac-sha1-96,hmac-md5-96
+MACs                            hmac-ripemd160,hmac-sha1
+
+# Spezifiziert die maximale Anzahl an fehlgeschlagenen Authentifizierungs-
+# versuchen die pro Verbindung zugelassen werden.
+#
+# @default 6
+MaxAuthTries                    4
+
+# Spezifiziert die maximale Anzahl an offenen Sitzungen pro Verbindung.
+#
+# @default 10
+MaxSessions                     4
+
+# Spezifiziert die maximale Anzahl an gleichzeitigen nicht authenti-
+# fizierten Verbindungen.
+#
+# @default 10
+MaxStartups                     2
+
+# Spezifiziert ob eine Passwort Authentifizierung am System möglich ist.
+#
+# @default no
+PasswordAuthentication          no
+
+# Spezifiziert ob eine Authentifizierung mit einem Schlüssel der sich
+# auf einer der eigenen Blacklist befindet möglich ist.
+#
+# @default no
+PermitBlacklistedKeys           no
+
+# Spezifiziert ob eine Authentifizierung als root möglich ist.
+#
+# @default yes
+PermitRootLogin                 no
+
+# Spezifiziert ob Tunnel via SSH möglich sind.
+#
+# @default no
+PermitTunnel                    no
+
+# Spezifiziert ob das System Umgebungsvariablen von ~/.ssh/environment
+# und/oder ~/.ssh/authorized_keys akzeptiert. Diese Option kann diverse
+# Sicherheitsrisiken mit sich bringen und sollte deaktiviert bleiben.
+#
+# @default no
+PermitUserEnvironment           no
+
+# Spezifiziert ob nach der Authentifizierung der Zeitpunkt der letzten
+# Anmeldung ausgegeben werden soll.
+#
+# @default yes
+PrintLastLog                    no
+
+# Spezifiziert ob nach der Authentifizierung der Inhalt der Datei
+# /etc/motd (messages of the day) ausgegeben werden soll.
+#
+# @default yes
+PrintMotd                       yes
+
+# Spezifiziert welche SSH Protokollversion zum Einsatz kommt.
+#
+# @default 2,1
+Protocol                        2
+
+# Spezifiziert ob eine Schlüsselauthentifizierung am System möglich ist.
+#
+# @default yes
+PubkeyAuthentication            yes
+
+# Spezifiziert ob sshd vor Einlass ins System eines Benutzers dessen
+# Rechte auf die Verzeichnisse in die er zu Beginn eingelassen werden
+# soll (in dem meisten Fällen das Heimverzeichnis des Benutzers) über-
+# prüft werden. Sollten die Rechte dem Benutzer den Zugriff auf eben
+# dieses Verzeichnis untersagen wird die Sitzung sofort wieder beendet
+# und ein entsprechender Fehlercode zurückgegeben.
+#
+# @default yes
+StrictModes                     yes
+
+# Spezifiziert das Untersystem für SFTP.
+#
+# @default /usr/lib/openssh/sftp-server
+Subsystem sftp                  /usr/lib/openssh/sftp-server
+
+# Spezifiziert mit welchem code sshd logt.
+#
+# @default AUTH
+SyslogFacility                  AUTH
+
+# Spezifiziert ob TCP Keep-Alive unterstützt werden soll.
+#
+# @default yes
+TCPKeepAlive                    yes
+
+# Spezifiziert ob sshd den eigenen Hostnamen bei Anmeldung via Hostnamen
+# via DNS auf Korrektheit überprüfen soll. Ist eine Hostnamen basierte
+# Anmeldung erwünscht muss diese Option aktiviert werden. Wir erlauben
+# ausschließlich die Anmeldung via IP-Adresse und können deshalb darauf
+# verzichten.
+#
+# @default yes
+UseDNS                          no
+
+# Spezifziert ob login(1) zur Anmeldung von interaktiven Sitzungen ver-
+# wendet werden soll. login ist verglichen mit der interkativen Anmeld-
+# ung die sshd bietet als veraltet zu betrachten.
+#
+# @default no
+UseLogin                        no
+
+# Pluggable Authentication Modules wird standardmäßig von Debian zur
+# Authentifizierung von Benutzern verwendet. Es ersetzt die klassische
+# Passwort Anmeldung. PAM ermöglicht die zentrale Konfiguration von
+# Benutzerrechten, da wir jedoch auf eine Schlüsselauthentifizierung
+# setzen und zur Anmeldung ausschließlich sshd verwenden können wir auf
+# diesen Dienst verzichten.
+#
+# @default yes
+UsePAM                          no
+
+# Spezifiziert ob Privilegien während der Authentifizierung und der ei-
+# gentlichen Sitzung getrennt behandelt werden sollen. Im Klartext be-
+# deutet das, dass während der Anmeldung sshd eine andere Sitzung (mit
+# geringen Rechten) verwendet und erst nach erfolgreicher Authentifi-
+# zierung eine Sitzung mit den Rechten des Benutzers gestartet.
+#
+# @default yes
+UsePrivilegeSeparation          yes
+
+# Spezifiziert ob X11 an den Benutzer weitergeleitet wird. In einer
+# reinen Serverkonfiguration ist X11 nicht erwünscht.
+#
+# @default yes
+X11Forwarding                   no
