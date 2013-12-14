@@ -7,7 +7,7 @@ adduser [username]
 chmod 770 /home/[username]
 su [username]
 cd
-ssh-keygen -t rsa 4096
+ssh-keygen -t rsa -b 4096
 chmod 600 .ssh/id_dsa.pub
 ```
 ### DSA
