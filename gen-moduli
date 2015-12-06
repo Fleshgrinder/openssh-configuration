@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+cd /etc/ssh
+ssh-keygen -G moduli.all -b 4096
+ssh-keygen -T moduli -f moduli.all
+rm moduli.all
