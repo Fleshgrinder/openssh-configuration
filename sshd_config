@@ -4,6 +4,12 @@
 # @copyright 2014-15 Richard Fussenegger
 # @license http://unlicense.org/ PD
 
+# Port MUST come before listen address.
+Port                            21976
+
+# Listen on all available network interfaces.
+#ListenAddress                   0.0.0.0
+
 AddressFamily                   any
 AllowAgentForwarding            no
 AllowGroups                     ssh-user
@@ -22,7 +28,6 @@ HostbasedAuthentication         no
 HostKey                         /etc/ssh/ssh_host_rsa_key
 HostKey                         /etc/ssh/ssh_host_ed25519_key
 KexAlgorithms                   curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
-ListenAddress                   127.0.0.1:21976
 LoginGraceTime                  120
 LogLevel                        INFO
 MACs                            hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
